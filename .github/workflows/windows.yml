@@ -13,6 +13,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
+    - name: Set PowerShell Execution Policy
+      shell: powershell
+      run: |
+        Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+
       
     - name: Enable Developer Mode
       shell: powershell
