@@ -10,6 +10,26 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      
+    - name: Enable Developer Mode
+      shell: powershell
+      run: |
+        reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
+        
+    - name: Install WinAppDriver
+      shell: powershell
+      run: |
+        $winAppDriverUrl = "https://github.com/microsoft/WinAppDriver/releases/download/v1.2.1/WindowsApplicationDriver_1.2.1.msi"
+        $installerPath = "$env:TEMP\WinAppDriver.msi"
+        Invoke-WebRequest -Uri $winAppDriverUrl -OutFile $installerPath
+        Start-Process msiexec.exe -ArgumentList "/i $installerPath /quiet /qn" -Wait
+      
+    - name: Start WinAppDriver
+      shell: powershell
+      run: |
+        Start-Process "C:\Program Files\Windows Application Driver\WinAppDriver.exe"
+        Start-Sleep -s 5
+        
     - name: Katalon Studio Github Action
       uses: katalon-studio/katalon-studio-github-action@v4.0
       with:
