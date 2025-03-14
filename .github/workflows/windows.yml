@@ -1,9 +1,9 @@
 name: CI
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 jobs:
   build:
     runs-on: windows-latest
@@ -13,6 +13,6 @@ jobs:
     - name: Katalon Studio Github Action
       uses: katalon-studio/katalon-studio-github-action@v2.1
       with:
-          version: '7.5.5'
+          version: '10.1.0'
           projectPath: '${{ github.workspace }}'
           args: '-noSplash -retry=0 -browserType=Windows -statusDelay=15 -testSuitePath="Test Suites/SampleTestSuite" -apiKey= ${{ secrets.KATALON_API_KEY }}'
