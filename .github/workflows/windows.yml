@@ -20,29 +20,29 @@ jobs:
         Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 
       
-    - name: Enable Developer Mode
-      shell: powershell
-      run: |
-        reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
+    # - name: Enable Developer Mode
+    #   shell: powershell
+    #   run: |
+    #     reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
         
-    - name: Install WinAppDriver
-      shell: powershell
-      run: |
-        $winAppDriverUrl = "https://github.com/microsoft/WinAppDriver/releases/download/v1.2.1/WindowsApplicationDriver_1.2.1.msi"
-        $installerPath = "$env:TEMP\WinAppDriver.msi"
-        Invoke-WebRequest -Uri $winAppDriverUrl -OutFile $installerPath
-        Start-Process msiexec.exe -ArgumentList "/i $installerPath /quiet /qn" -Wait
+    # - name: Install WinAppDriver
+    #   shell: powershell
+    #   run: |
+    #     $winAppDriverUrl = "https://github.com/microsoft/WinAppDriver/releases/download/v1.2.1/WindowsApplicationDriver_1.2.1.msi"
+    #     $installerPath = "$env:TEMP\WinAppDriver.msi"
+    #     Invoke-WebRequest -Uri $winAppDriverUrl -OutFile $installerPath
+    #     Start-Process msiexec.exe -ArgumentList "/i $installerPath /quiet /qn" -Wait
         
-        # Verify installation
-        if (Test-Path "C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe") {
-          Write-Host "WinAppDriver installed successfully in Program Files (x86)"
-        } elseif (Test-Path "C:\Program Files\Windows Application Driver\WinAppDriver.exe") {
-          Write-Host "WinAppDriver installed successfully in Program Files"
-        } else {
-          Write-Host "WinAppDriver installation may have failed. Checking installation logs..."
-          Get-Content "$env:TEMP\msi*.log" -ErrorAction SilentlyContinue | Select-String "WinAppDriver"
-          throw "WinAppDriver not found after installation"
-        }
+    #     # Verify installation
+    #     if (Test-Path "C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe") {
+    #       Write-Host "WinAppDriver installed successfully in Program Files (x86)"
+    #     } elseif (Test-Path "C:\Program Files\Windows Application Driver\WinAppDriver.exe") {
+    #       Write-Host "WinAppDriver installed successfully in Program Files"
+    #     } else {
+    #       Write-Host "WinAppDriver installation may have failed. Checking installation logs..."
+    #       Get-Content "$env:TEMP\msi*.log" -ErrorAction SilentlyContinue | Select-String "WinAppDriver"
+    #       throw "WinAppDriver not found after installation"
+    #     }
       
     - name: Start WinAppDriver
       shell: powershell
