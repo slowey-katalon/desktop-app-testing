@@ -9,7 +9,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
-        runner: [dell-windows-11, hp-windows-10]
+        runner: [dell-windows-11, hp-windows-10, windows-10-server]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
