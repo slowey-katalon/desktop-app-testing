@@ -23,11 +23,32 @@ jobs:
         $installerPath = "$env:TEMP\WinAppDriver.msi"
         Invoke-WebRequest -Uri $winAppDriverUrl -OutFile $installerPath
         Start-Process msiexec.exe -ArgumentList "/i $installerPath /quiet /qn" -Wait
+        
+        # Verify installation
+        if (Test-Path "C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe") {
+          Write-Host "WinAppDriver installed successfully in Program Files (x86)"
+        } elseif (Test-Path "C:\Program Files\Windows Application Driver\WinAppDriver.exe") {
+          Write-Host "WinAppDriver installed successfully in Program Files"
+        } else {
+          Write-Host "WinAppDriver installation may have failed. Checking installation logs..."
+          Get-Content "$env:TEMP\msi*.log" -ErrorAction SilentlyContinue | Select-String "WinAppDriver"
+          throw "WinAppDriver not found after installation"
+        }
       
     - name: Start WinAppDriver
       shell: powershell
       run: |
-        Start-Process "C:\Program Files\Windows Application Driver\WinAppDriver.exe"
+        # Try both possible installation paths
+        if (Test-Path "C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe") {
+          Start-Process "C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"
+        } elseif (Test-Path "C:\Program Files\Windows Application Driver\WinAppDriver.exe") {
+          Start-Process "C:\Program Files\Windows Application Driver\WinAppDriver.exe"
+        } else {
+          Write-Host "WinAppDriver not found in expected locations. Checking installation..."
+          Get-ChildItem "C:\Program Files" -Recurse -Filter "WinAppDriver.exe" -ErrorAction SilentlyContinue
+          Get-ChildItem "C:\Program Files (x86)" -Recurse -Filter "WinAppDriver.exe" -ErrorAction SilentlyContinue
+          throw "WinAppDriver not found"
+        }
         Start-Sleep -s 5
         
     - name: Katalon Studio Github Action
